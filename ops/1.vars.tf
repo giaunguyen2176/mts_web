@@ -1,7 +1,3 @@
-variable "is_production" {
-  description = "Determine whether this is a production env to protect stateful resources such as: eleasticsearch, rds,... from being deleted on terraform destroy operation"
-}
-
 variable "cluster" {
   description = "The name of the cluster to deploy this service into, e.g. \"cluster1\""
 }
@@ -35,25 +31,4 @@ variable "containers" {
     memory = number
     cpu = number
   }))
-}
-
-variable "environment_variables" {
-  description = "The object describe all containers"
-  type = object({
-    node_env = string
-    debug = string
-  })
-}
-
-variable "rds" {
-  description = "The object describe all rds properties"
-  type = object({
-    engine = string
-    engine_version = string
-    instance_class = string
-    username = string
-    password = string
-    parameter_group_name = string
-    db_name = string
-  })
 }

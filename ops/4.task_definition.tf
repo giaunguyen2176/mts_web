@@ -8,58 +8,28 @@ resource "aws_ecs_task_definition" task_definition {
 
   container_definitions = jsonencode([
     {
-      name      = var.containers["api"].name
-      image     = var.containers["api"].image
-      cpu       = tonumber(var.containers["api"].cpu)
-      memory    = tonumber(var.containers["api"].memory)
+      name      = var.containers["app"].name
+      image     = var.containers["app"].image
+      cpu       = tonumber(var.containers["app"].cpu)
+      memory    = tonumber(var.containers["app"].memory)
       essential = true
       portMappings = [
         {
-          containerPort = tonumber(var.containers["api"].container_port)
-          hostPort      = tonumber(var.containers["api"].host_port)
+          containerPort = tonumber(var.containers["app"].container_port)
+          hostPort      = tonumber(var.containers["app"].host_port)
         }
       ]
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group = "backend",
+          awslogs-group = "frontend",
           awslogs-region = "ap-southeast-1",
           awslogs-create-group = "true",
           awslogs-stream-prefix = var.service
         }
       },
       command = [
-        "./entrypoint.sh"
-      ],
-      environment = [
-        {
-          name = "DEBUG",
-          value = var.environment_variables.debug
-        },
-        {
-          name = "NODE_ENV",
-          value = var.environment_variables.node_env
-        },
-        {
-          name = "DB_HOST",
-          value = aws_db_instance.default.address
-        },
-        {
-          name = "DB_PORT",
-          value = tostring(aws_db_instance.default.port)
-        },
-        {
-          name = "DB_PASS",
-          value = aws_db_instance.default.password
-        },
-        {
-          name = "DB_USER",
-          value = aws_db_instance.default.username
-        },
-        {
-          name = "DB_NAME",
-          value = aws_db_instance.default.db_name
-        }
+        "http-server"
       ]
     }
   ])
